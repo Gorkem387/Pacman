@@ -1,5 +1,5 @@
 import './style.css'
-import { COLORS, MAP, TILE_SIZE } from './constants';
+import { COLORS, MAP, PACMAN_SPEED, TILE_SIZE } from './constants';
 import { Pacman } from './entities/Pacman.ts';
 
 const canvas = document.querySelector<HTMLCanvasElement>('canvas')!;
@@ -8,7 +8,7 @@ const ctx = canvas.getContext('2d')!;
 canvas.width = MAP[0].length * TILE_SIZE;
 canvas.height = MAP.length * TILE_SIZE;
 
-const pacman = new Pacman(0, 0, 10, 5);
+const pacman = new Pacman(0, 0, 10, PACMAN_SPEED);
 
 // Find Pacman starting position from the MAP (called only once)
 function initPacman() {

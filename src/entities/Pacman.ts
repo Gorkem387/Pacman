@@ -31,10 +31,22 @@ export class Pacman {
         if (this.direction === 'LEFT') nextX -= this.speed;
         if (this.direction === 'RIGHT') nextX += this.speed;
 
-        const col = Math.floor(nextX / TILE_SIZE);
-        const row = Math.floor(nextY / TILE_SIZE);
+        // Check all 4 edges of Pacman's circle
+        const r = this.radius - 2;
+        const corners = [
+            { x: nextX - r, y: nextY - r },
+            { x: nextX + r, y: nextY - r },
+            { x: nextX - r, y: nextY + r },
+            { x: nextX + r, y: nextY + r },
+        ];
 
-        if (map[row][col] !== 1) {
+        const collision = corners.some(corner => {
+            const col = Math.floor(corner.x / TILE_SIZE);
+            const row = Math.floor(corner.y / TILE_SIZE);
+            return map[row]?.[col] === 1;
+        });
+
+        if (!collision) {
             this.x = nextX;
             this.y = nextY;
         }

@@ -1,4 +1,5 @@
 export const TILE_SIZE = 30;
+export const PACMAN_SPEED = 2;
 
 // Colors of the game
 export const COLORS = {

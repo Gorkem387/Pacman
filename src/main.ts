@@ -51,7 +51,7 @@ window.addEventListener('keydown', (e) => {
 
 function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    pacman.update();
+    pacman.update(MAP);
     drawMap();
     pacman.draw(ctx);
     requestAnimationFrame(gameLoop);

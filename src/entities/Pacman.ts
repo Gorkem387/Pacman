@@ -1,3 +1,5 @@
+import { TILE_SIZE } from '../constants';
+
 export class Pacman {
     x: number;
     y: number;
@@ -20,10 +22,21 @@ export class Pacman {
         ctx.fill();
     }
 
-    update() {
-    if (this.direction === 'UP') this.y -= this.speed;
-    if (this.direction === 'DOWN') this.y += this.speed;
-    if (this.direction === 'LEFT') this.x -= this.speed;
-    if (this.direction === 'RIGHT') this.x += this.speed;
-}
+    update(map: number[][]) {
+        let nextX = this.x;
+        let nextY = this.y;
+
+        if (this.direction === 'UP') nextY -= this.speed;
+        if (this.direction === 'DOWN') nextY += this.speed;
+        if (this.direction === 'LEFT') nextX -= this.speed;
+        if (this.direction === 'RIGHT') nextX += this.speed;
+
+        const col = Math.floor(nextX / TILE_SIZE);
+        const row = Math.floor(nextY / TILE_SIZE);
+
+        if (map[row][col] !== 1) {
+            this.x = nextX;
+            this.y = nextY;
+        }
+    }
 }

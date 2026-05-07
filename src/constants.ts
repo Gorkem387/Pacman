@@ -1,0 +1,20 @@
+export const TILE_SIZE = 32;
+
+// Colors of the game
+export const COLORS = {
+    WALL: '0000FF',
+    PACMAN: 'FFFF00',
+    DOT: 'FFFFFF',
+    BACKGROUND: '000000'
+};
+
+// Map : 1 = Wall, 0 = Point, 9 = Void (Pacman starting point)
+export const MAP = [
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 1, 1, 0, 1, 1, 1, 0, 1],
+    [1, 0, 1, 1, 0, 1, 1, 1, 0, 1],
+    [1, 0, 0, 0, 9, 0, 0, 0, 0, 1],
+    [1, 0, 1, 1, 0, 1, 1, 1, 0, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+];

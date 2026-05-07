@@ -45,6 +45,17 @@ function drawMap() {
     }
 }
 
+function collectDot() {
+    const col = Math.floor(pacman.x / TILE_SIZE);
+    const row = Math.floor(pacman.y / TILE_SIZE);
+
+    if (gameMap[row][col] === 0) {
+        gameMap[row][col] = 7;
+        score++;
+        console.log('Score:', score);
+    }
+}
+
 window.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowUp') pacman.direction = 'UP';
     if (e.key === 'ArrowDown') pacman.direction = 'DOWN';
@@ -55,6 +66,7 @@ window.addEventListener('keydown', (e) => {
 function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     pacman.update(gameMap);
+    collectDot();
     drawMap();
     pacman.draw(ctx);
     requestAnimationFrame(gameLoop);

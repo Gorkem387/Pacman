@@ -5,16 +5,19 @@ import { Pacman } from './entities/Pacman.ts';
 const canvas = document.querySelector<HTMLCanvasElement>('canvas')!;
 const ctx = canvas.getContext('2d')!;
 
-canvas.width = MAP[0].length * TILE_SIZE;
-canvas.height = MAP.length * TILE_SIZE;
+const gameMap = MAP.map(row => [...row]);
+let score = 0;
+
+canvas.width = gameMap[0].length * TILE_SIZE;
+canvas.height = gameMap.length * TILE_SIZE;
 
 const pacman = new Pacman(0, 0, 10, PACMAN_SPEED);
 
 // Find Pacman starting position from the MAP (called only once)
 function initPacman() {
-    for (let i = 0; i < MAP.length; i++) {
-        for (let j = 0; j < MAP[i].length; j++) {
-            if (MAP[i][j] === 9) {
+    for (let i = 0; i < gameMap.length; i++) {
+        for (let j = 0; j < gameMap[i].length; j++) {
+            if (gameMap[i][j] === 9) {
                 pacman.x = j * TILE_SIZE + TILE_SIZE / 2;
                 pacman.y = i * TILE_SIZE + TILE_SIZE / 2;
             }
@@ -23,16 +26,16 @@ function initPacman() {
 }
 
 function drawMap() {
-    for (let i = 0; i < MAP.length; i++) {
-        for (let j = 0; j < MAP[i].length; j++) {
+    for (let i = 0; i < gameMap.length; i++) {
+        for (let j = 0; j < gameMap[i].length; j++) {
 
             const x = j * TILE_SIZE;
             const y = i * TILE_SIZE;
 
-            if (MAP[i][j] === 1) {
+            if (gameMap[i][j] === 1) {
                 ctx.fillStyle = COLORS.WALL;
                 ctx.fillRect(x, y, TILE_SIZE, TILE_SIZE);
-            } else if (MAP[i][j] === 0) {
+            } else if (gameMap[i][j] === 0) {
                 ctx.fillStyle = COLORS.DOT;
                 ctx.beginPath();
                 ctx.arc(x + TILE_SIZE / 2, y + TILE_SIZE / 2, 2, 0, Math.PI * 2);
@@ -51,7 +54,7 @@ window.addEventListener('keydown', (e) => {
 
 function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    pacman.update(MAP);
+    pacman.update(gameMap);
     drawMap();
     pacman.draw(ctx);
     requestAnimationFrame(gameLoop);

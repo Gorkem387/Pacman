@@ -1,8 +1,11 @@
 import './style.css'
 import { COLORS, MAP, TILE_SIZE } from './constants';
+import { Pacman } from './entities/Pacman.ts';
 
 const canvas = document.querySelector<HTMLCanvasElement>('canvas')!;
 const ctx = canvas.getContext('2d')!;
+
+const pacman = new Pacman(100, 100, 10, 5);
 
 canvas.width = MAP[0].length * TILE_SIZE;
 canvas.height = MAP.length * TILE_SIZE;
@@ -28,3 +31,4 @@ function drawMap() {
 }
 
 drawMap();
+pacman.draw(ctx);

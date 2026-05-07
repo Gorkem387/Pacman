@@ -5,7 +5,7 @@ import { Pacman } from './entities/Pacman.ts';
 const canvas = document.querySelector<HTMLCanvasElement>('canvas')!;
 const ctx = canvas.getContext('2d')!;
 
-const pacman = new Pacman(100, 100, 10, 5);
+const pacman = new Pacman(0, 0, 10, 5);
 
 canvas.width = MAP[0].length * TILE_SIZE;
 canvas.height = MAP.length * TILE_SIZE;
@@ -25,10 +25,13 @@ function drawMap() {
         ctx.beginPath();
         ctx.arc(x + TILE_SIZE / 2, y + TILE_SIZE / 2, 2, 0, Math.PI * 2);
         ctx.fill();
+      } else if (MAP[i][j] === 9) {
+        pacman.x = x + TILE_SIZE / 2;
+        pacman.y = y + TILE_SIZE / 2;
+        pacman.draw(ctx);
       }
     }
   }
 }
 
 drawMap();
-pacman.draw(ctx);

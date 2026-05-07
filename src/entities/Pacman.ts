@@ -1,3 +1,5 @@
+import { TILE_SIZE } from '../constants';
+
 export class Pacman {
     x: number;
     y: number;
@@ -20,10 +22,33 @@ export class Pacman {
         ctx.fill();
     }
 
-    update() {
-    if (this.direction === 'UP') this.y -= this.speed;
-    if (this.direction === 'DOWN') this.y += this.speed;
-    if (this.direction === 'LEFT') this.x -= this.speed;
-    if (this.direction === 'RIGHT') this.x += this.speed;
-}
+    update(map: number[][]) {
+        let nextX = this.x;
+        let nextY = this.y;
+
+        if (this.direction === 'UP') nextY -= this.speed;
+        if (this.direction === 'DOWN') nextY += this.speed;
+        if (this.direction === 'LEFT') nextX -= this.speed;
+        if (this.direction === 'RIGHT') nextX += this.speed;
+
+        // Check all 4 edges of Pacman's circle
+        const r = this.radius - 2;
+        const corners = [
+            { x: nextX - r, y: nextY - r },
+            { x: nextX + r, y: nextY - r },
+            { x: nextX - r, y: nextY + r },
+            { x: nextX + r, y: nextY + r },
+        ];
+
+        const collision = corners.some(corner => {
+            const col = Math.floor(corner.x / TILE_SIZE);
+            const row = Math.floor(corner.y / TILE_SIZE);
+            return map[row]?.[col] === 1;
+        });
+
+        if (!collision) {
+            this.x = nextX;
+            this.y = nextY;
+        }
+    }
 }

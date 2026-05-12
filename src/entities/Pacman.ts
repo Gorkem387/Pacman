@@ -6,8 +6,10 @@ export class Pacman {
     radius: number;
     speed: number;
     direction: string;
+    mouthAngle: number = 0;
+    mouthOpen: boolean = true;
 
-    constructor(x: number, y: number, radius: number, speed: number, direction: string) {
+    constructor(x: number, y: number, radius: number, speed: number) {
         this.x = x;
         this.y = y;
         this.radius = radius;
@@ -16,11 +18,34 @@ export class Pacman {
     }
 
     draw(ctx: CanvasRenderingContext2D) {
-        ctx.fillStyle = '#FFFF00';
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fill();
+    // Update mouth animation
+    if (this.mouthOpen) {
+        this.mouthAngle += 0.03;
+        if (this.mouthAngle >= 0.25) this.mouthOpen = false;
+    } else {
+        this.mouthAngle -= 0.03;
+        if (this.mouthAngle <= 0) this.mouthOpen = true;
     }
+
+    // Calculate rotation based on direction
+    let rotation = 0;
+    if (this.direction === 'UP') rotation = -Math.PI / 2;
+    if (this.direction === 'DOWN') rotation = Math.PI / 2;
+    if (this.direction === 'LEFT') rotation = Math.PI;
+    if (this.direction === 'RIGHT') rotation = 0;
+
+    ctx.save(); // save canvas state
+    ctx.translate(this.x, this.y); // move origin to Pacman's center
+    ctx.rotate(rotation); // rotate
+
+    ctx.fillStyle = '#FFFF00';
+    ctx.beginPath();
+    ctx.arc(0, 0, this.radius, this.mouthAngle * Math.PI, (2 - this.mouthAngle) * Math.PI);
+    ctx.lineTo(0, 0);
+    ctx.fill();
+
+    ctx.restore(); // restore canvas state
+}
 
     update(map: number[][]) {
         let nextX = this.x;

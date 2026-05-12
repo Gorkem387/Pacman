@@ -9,7 +9,7 @@ export class Pacman {
     mouthAngle: number = 0;
     mouthOpen: boolean = true;
 
-    constructor(x: number, y: number, radius: number, speed: number, direction: string) {
+    constructor(x: number, y: number, radius: number, speed: number) {
         this.x = x;
         this.y = y;
         this.radius = radius;

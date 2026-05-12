@@ -9,6 +9,8 @@ const ctx = canvas.getContext('2d')!;
 const gameMap = MAP.map(row => [...row]);
 let score = 0;
 
+let lives = 3;
+
 canvas.width = gameMap[0].length * TILE_SIZE;
 canvas.height = gameMap.length * TILE_SIZE;
 
@@ -70,16 +72,30 @@ function checkGhostCollision() {
         const distance = Math.sqrt(dx * dx + dy * dy);
 
         if (distance < pacman.radius + ghost.radius) {
-            alert('Game Over! Score: ' + score);
-            document.location.reload();
+            lives--;
+            if (lives <= 0) {
+                alert('Game Over! Score: ' + score);
+                document.location.reload();
+            } else {
+                initPacman(); // respawn Pacman
+            }
         }
     });
+}
+
+function checkVictory() {
+    const dotsLeft = gameMap.flat().filter(cell => cell === 0).length;
+    if (dotsLeft === 0) {
+        alert('You Win! Score: ' + score);
+        document.location.reload();
+    }
 }
 
 function drawScore() {
     ctx.fillStyle = '#FFFFFF';
     ctx.font = '20px Arial';
     ctx.fillText('Score: ' + score, 10, 20);
+    ctx.fillText('Lives: ' + lives, 120, 20);
 }
 
 window.addEventListener('keydown', (e) => {
@@ -94,6 +110,7 @@ function gameLoop() {
     pacman.update(gameMap);
     collectDot();
     checkGhostCollision();
+    checkVictory();
     drawMap();
     pacman.draw(ctx);
     ghosts.forEach(ghost => ghost.update(gameMap));

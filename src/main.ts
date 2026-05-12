@@ -63,6 +63,19 @@ function collectDot() {
     }
 }
 
+function checkGhostCollision() {
+    ghosts.forEach(ghost => {
+        const dx = pacman.x - ghost.x;
+        const dy = pacman.y - ghost.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance < pacman.radius + ghost.radius) {
+            alert('Game Over! Score: ' + score);
+            document.location.reload();
+        }
+    });
+}
+
 function drawScore() {
     ctx.fillStyle = '#FFFFFF';
     ctx.font = '20px Arial';
@@ -70,16 +83,17 @@ function drawScore() {
 }
 
 window.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowUp') pacman.direction = 'UP';
-    if (e.key === 'ArrowDown') pacman.direction = 'DOWN';
-    if (e.key === 'ArrowLeft') pacman.direction = 'LEFT';
-    if (e.key === 'ArrowRight') pacman.direction = 'RIGHT';
+    if (e.key === 'ArrowUp' || e.key === 'z') pacman.direction = 'UP';
+    if (e.key === 'ArrowDown' || e.key === 's') pacman.direction = 'DOWN';
+    if (e.key === 'ArrowLeft' || e.key === 'q') pacman.direction = 'LEFT';
+    if (e.key === 'ArrowRight' || e.key === 'd') pacman.direction = 'RIGHT';
 });
 
 function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     pacman.update(gameMap);
     collectDot();
+    checkGhostCollision();
     drawMap();
     pacman.draw(ctx);
     ghosts.forEach(ghost => ghost.update(gameMap));

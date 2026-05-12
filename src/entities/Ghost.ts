@@ -22,7 +22,41 @@ export class Ghost {
     draw(ctx: CanvasRenderingContext2D) {
         ctx.fillStyle = this.color;
         ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        
+        // Top half - semicircle
+        ctx.arc(this.x, this.y, this.radius, Math.PI, 0);
+        
+        // Bottom part - wavy
+        const bottom = this.y + this.radius;
+        const segments = 3;
+        const segWidth = (this.radius * 2) / segments;
+        
+        for (let i = 0; i < segments; i++) {
+            const startX = this.x + this.radius - i * segWidth;
+            const midX = startX - segWidth / 2;
+            const endX = startX - segWidth;
+            if (i % 2 === 0) {
+                ctx.quadraticCurveTo(midX, bottom + 5, endX, bottom);
+            } else {
+                ctx.quadraticCurveTo(midX, bottom - 5, endX, bottom);
+            }
+        }
+        
+        ctx.closePath();
+        ctx.fill();
+
+        // Eyes
+        ctx.fillStyle = '#FFFFFF';
+        ctx.beginPath();
+        ctx.arc(this.x - 4, this.y - 3, 3, 0, Math.PI * 2);
+        ctx.arc(this.x + 4, this.y - 3, 3, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Pupils
+        ctx.fillStyle = '#000000';
+        ctx.beginPath();
+        ctx.arc(this.x - 3, this.y - 3, 1.5, 0, Math.PI * 2);
+        ctx.arc(this.x + 5, this.y - 3, 1.5, 0, Math.PI * 2);
         ctx.fill();
     }
 

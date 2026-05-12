@@ -1,6 +1,7 @@
 import './style.css'
 import { COLORS, MAP, PACMAN_SPEED, TILE_SIZE } from './constants';
 import { Pacman } from './entities/Pacman.ts';
+import { Ghost } from './entities/Ghost.ts';
 
 const canvas = document.querySelector<HTMLCanvasElement>('canvas')!;
 const ctx = canvas.getContext('2d')!;
@@ -12,6 +13,12 @@ canvas.width = gameMap[0].length * TILE_SIZE;
 canvas.height = gameMap.length * TILE_SIZE;
 
 const pacman = new Pacman(0, 0, 10, PACMAN_SPEED);
+
+const ghosts = [
+    new Ghost(1 * TILE_SIZE + TILE_SIZE / 2, 1 * TILE_SIZE + TILE_SIZE / 2, 10, 2, '#FF0000'),
+    new Ghost(29 * TILE_SIZE + TILE_SIZE / 2, 1 * TILE_SIZE + TILE_SIZE / 2, 10, 2, '#FFB8FF'),
+    new Ghost(1 * TILE_SIZE + TILE_SIZE / 2, 15 * TILE_SIZE + TILE_SIZE / 2, 10, 2, '#FFB852'),
+];
 
 // Find Pacman starting position from the MAP (called only once)
 function initPacman() {
@@ -75,6 +82,8 @@ function gameLoop() {
     collectDot();
     drawMap();
     pacman.draw(ctx);
+    ghosts.forEach(ghost => ghost.update(gameMap));
+    ghosts.forEach(ghost => ghost.draw(ctx));
     drawScore();
     requestAnimationFrame(gameLoop);
 }

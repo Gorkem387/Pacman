@@ -56,6 +56,12 @@ function collectDot() {
     }
 }
 
+function drawScore() {
+    ctx.fillStyle = '#FFFFFF';
+    ctx.font = '20px Arial';
+    ctx.fillText('Score: ' + score, 10, 20);
+}
+
 window.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowUp') pacman.direction = 'UP';
     if (e.key === 'ArrowDown') pacman.direction = 'DOWN';
@@ -69,6 +75,7 @@ function gameLoop() {
     collectDot();
     drawMap();
     pacman.draw(ctx);
+    drawScore();
     requestAnimationFrame(gameLoop);
 }
 

@@ -1,6 +1,6 @@
 # Pac-Man 🟡
 
-A personal project to discover TypeScript. Nothing more, nothing less — just me learning a new language by building something fun.
+A personal project to discover TypeScript. Nothing more, nothing less, just me learning a new language by building something fun.
 
 ## Stack
 

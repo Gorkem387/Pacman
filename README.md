@@ -1,41 +1,130 @@
-# Pac-Man 🟡
+# 🟡 Pac-Man Clone
 
-A personal project to discover TypeScript. Nothing more, nothing less, just me learning a new language by building something fun.
+A modern Pac-Man clone built with **TypeScript**, created as a first project to learn and practice TypeScript after previously working with JavaScript.
 
-## Stack
+The project focuses on clean architecture, scalable game systems, and smooth gameplay mechanics.
 
-- TypeScript
-- Vite
-- HTML5 Canvas
+---
 
-## How to run
+# 🚀 Features
+
+## Core Mechanics
+- ✅ Grid-based maze with smooth wall collisions
+- ✅ Pac-Man animations (mouth movement)
+- ✅ Modular and scalable architecture
+- ✅ Responsive game loop
+- ✅ Unit testing with Vitest
+- ✅ Modern UI overlays (Start, Victory, Game Over)
+
+---
+
+# 🌟 Current Progress
+
+## Gameplay & UI
+- ✅ Start screen before launching the game
+- ✅ Modern Game Over & Victory screens
+- ✅ HUD and canvas rendering improvements
+
+## Ghost System
+- ⬜ Advanced Ghost AI (BFS pathfinding)
+- ⬜ Unique ghost personalities
+- ⬜ Smarter chase and escape behaviors
+
+## Upcoming Features
+- ⬜ Super Pellets
+- ⬜ Level system with increasing difficulty
+- ⬜ High score persistence using LocalStorage
+
+---
+
+# ⚡ Planned Power System
+
+A future feature planned for the game is a **Power System**.
+
+Before starting a match, the player will be able to choose a special ability.
+
+### Planned Ideas
+- 👻 **Invisibility:** Ghosts stop detecting Pac-Man for a few seconds
+- ⚡ **Speed Boost:** Temporary movement speed increase
+- 🛡️ **Shield:** Survive one ghost collision
+- ⏱️ **Time Slow:** Slow down all ghosts temporarily
+
+More powers and gameplay ideas will be added later.
+
+---
+
+# 🏗️ Project Architecture
+
+The project follows a modular architecture to clearly separate game logic, rendering, and entity behavior.
+
+```plaintext
+src/
+├── entities/
+│   ├── Pacman.ts       # Pac-Man logic and animations
+│   └── Ghost.ts        # Ghost behaviors and future AI
+├── tests/
+│   └── logic.test.ts   # Unit tests for pure logic
+├── logic.ts            # Pure functions (collisions, win conditions)
+├── renderer.ts         # Rendering engine (maze, HUD, overlays)
+├── game.ts             # Main game loop and state manager
+├── constants.ts        # Game configuration and map structure
+├── main.ts             # Lightweight entry point
+└── style.css           # Global canvas styles
+```
+
+---
+
+# 🧪 Tech Stack
+
+| Technology | Role |
+|---|---|
+| TypeScript | Main programming language |
+| HTML5 Canvas | Rendering engine |
+| CSS3 | Styling |
+| Vite | Development environment |
+| Vitest | Unit testing framework |
+
+---
+
+# 🎮 Controls
+
+| Key | Action |
+|---|---|
+| ⬆️ ⬇️ ⬅️ ➡️ | Move Pac-Man |
+| `ZQSD` | Alternative movement controls |
+| `Any Key` | Start the game |
+| `Any Key` | Restart after Game Over |
+
+---
+
+# 📦 Installation
 
 ```bash
+# Clone the repository
+git clone https://github.com/Gorkem387/Pacman.git
+
+# Install dependencies
 npm install
+
+# Start development server
 npm run dev
 ```
 
-## Controls
+---
 
-| Player | Up | Down | Left | Right |
-|--------|----|------|------|-------|
-| Keyboard | Z | S | Q | D |
-| Arrows | ↑ | ↓ | ← | → |
+# 🧪 Run Tests
 
-## What's in it
+```bash
+npm run test
+```
 
-- A maze with walls and dots to collect
-- Pac-Man with mouth animation and collision detection
-- 3 ghosts with random movement
-- Score and lives system
-- Game Over and victory screen
+---
 
-## V2 ideas
+# 📌 Project Goals
 
-- Super pellets, ghosts turn blue and become vulnerable, eaten ghosts respawn at the center
-- Proper Game Over screen instead of a browser alert
-- Start screen before the game launches
-- Better ghost AI, ctually chase Pac-Man instead of just bouncing randomly
-- 2 player mode on the same keyboard (ZQSD + arrow keys)
-- Multiple levels with increasing difficulty
-- High score saved locally
+This project was created to:
+- Learn and practice TypeScript
+- Transition from JavaScript to TypeScript
+- Build a scalable game architecture
+- Practice game loop and rendering systems
+- Prepare a solid base for future gameplay features

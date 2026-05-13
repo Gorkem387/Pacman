@@ -9,9 +9,12 @@ const ctx = canvas.getContext('2d')!;
 const gameMap = MAP.map(row => [...row]);
 let score = 0;
 
-let lives = 3;
+let lives = 1;
 
-type GameState = 'START' | 'PLAYING';
+let countdown = 0;
+let canRestart = false;
+
+type GameState = 'START' | 'PLAYING' | 'GAME_OVER' | 'VICTORY';
 let currentState: GameState = 'START';
 
 canvas.width = gameMap[0].length * TILE_SIZE;
@@ -68,6 +71,19 @@ function collectDot() {
     }
 }
 
+function startRestartTimer() {
+    countdown = 3;
+    canRestart = false;
+
+    const interval = setInterval(() => {
+        countdown--;
+        if (countdown <= 0) {
+            clearInterval(interval);
+            canRestart = true;
+        }
+    }, 1000);
+}
+
 function checkGhostCollision() {
     ghosts.forEach(ghost => {
         const dx = pacman.x - ghost.x;
@@ -77,8 +93,8 @@ function checkGhostCollision() {
         if (distance < pacman.radius + ghost.radius) {
             lives--;
             if (lives <= 0) {
-                alert('Game Over! Score: ' + score);
-                document.location.reload();
+                currentState = 'GAME_OVER';
+                startRestartTimer();
             } else {
                 initPacman(); // respawn Pacman
             }
@@ -89,8 +105,8 @@ function checkGhostCollision() {
 function checkVictory() {
     const dotsLeft = gameMap.flat().filter(cell => cell === 0).length;
     if (dotsLeft === 0) {
-        alert('You Win! Score: ' + score);
-        document.location.reload();
+        currentState = 'VICTORY';
+        startRestartTimer();
     }
 }
 
@@ -117,11 +133,35 @@ function drawStartScreen() {
     ctx.fillText('Press any key to start', canvas.width / 2, canvas.height / 2 + 20);
 }
 
+function drawOverlay(title: string, subtitle: string, color: string) {
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.85)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.textAlign = 'center';
+    ctx.fillStyle = color;
+    ctx.font = 'bold 40px Arial';
+    ctx.fillText(title, canvas.width / 2, canvas.height / 2 - 20);
+
+    ctx.fillStyle = '#FFFFFF';
+    ctx.font = '20px Arial';
+    ctx.fillText(subtitle, canvas.width / 2, canvas.height / 2 + 30);
+}
+
 window.addEventListener('keydown', (e) => {
+    // Restart game if it's over or won
+    if (currentState === 'GAME_OVER' || currentState === 'VICTORY') {
+        if (canRestart) {
+            document.location.reload();
+        }
+        return; 
+    }
+
     if (currentState === 'START') {
         currentState = 'PLAYING';
         return;
     }
+
+    // Controls
     if (e.key === 'ArrowUp' || e.key === 'z') pacman.direction = 'UP';
     if (e.key === 'ArrowDown' || e.key === 's') pacman.direction = 'DOWN';
     if (e.key === 'ArrowLeft' || e.key === 'q') pacman.direction = 'LEFT';
@@ -132,18 +172,29 @@ function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     if (currentState === 'START') {
         drawMap(); 
-        drawStartScreen();
-    } else {
-        // Game Logic
+        drawOverlay('PAC-MAN', 'Press any key to start', '#FFFF00');
+    } 
+    else if (currentState === 'PLAYING') {
         pacman.update(gameMap);
         collectDot();
         checkGhostCollision();
         checkVictory();
         drawMap();
         pacman.draw(ctx);
-        ghosts.forEach(ghost => ghost.update(gameMap));
-        ghosts.forEach(ghost => ghost.draw(ctx));
+        ghosts.forEach(ghost => {
+            ghost.update(gameMap);
+            ghost.draw(ctx);
+        });
         drawScore();
+    } 
+    else if (currentState === 'GAME_OVER') {
+        drawMap();
+        const msg = canRestart ? "Press any key to restart" : `Restart in ${countdown}...`;
+        drawOverlay('GAME OVER', `Score: ${score} - ${msg}`, '#FF0000');
+    } 
+    else if (currentState === 'VICTORY') {
+        const msg = canRestart ? "Press any key to restart" : `Restart in ${countdown}...`;
+        drawOverlay('YOU WIN!', `Score: ${score} - ${msg}`, '#00FF00');
     }
     requestAnimationFrame(gameLoop);
 }

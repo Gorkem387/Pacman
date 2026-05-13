@@ -11,6 +11,9 @@ let score = 0;
 
 let lives = 3;
 
+type GameState = 'START' | 'PLAYING';
+let currentState: GameState = 'START';
+
 canvas.width = gameMap[0].length * TILE_SIZE;
 canvas.height = gameMap.length * TILE_SIZE;
 
@@ -98,7 +101,27 @@ function drawScore() {
     ctx.fillText('Lives: ' + lives, 120, 20);
 }
 
+function drawStartScreen() {
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.85)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Title
+    ctx.fillStyle = '#FFFF00';
+    ctx.font = 'bold 40px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('PAC-MAN', canvas.width / 2, canvas.height / 2 - 40);
+
+    // Instruction
+    ctx.fillStyle = '#FFFFFF';
+    ctx.font = '20px Arial';
+    ctx.fillText('Press any key to start', canvas.width / 2, canvas.height / 2 + 20);
+}
+
 window.addEventListener('keydown', (e) => {
+    if (currentState === 'START') {
+        currentState = 'PLAYING';
+        return;
+    }
     if (e.key === 'ArrowUp' || e.key === 'z') pacman.direction = 'UP';
     if (e.key === 'ArrowDown' || e.key === 's') pacman.direction = 'DOWN';
     if (e.key === 'ArrowLeft' || e.key === 'q') pacman.direction = 'LEFT';
@@ -107,15 +130,21 @@ window.addEventListener('keydown', (e) => {
 
 function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    pacman.update(gameMap);
-    collectDot();
-    checkGhostCollision();
-    checkVictory();
-    drawMap();
-    pacman.draw(ctx);
-    ghosts.forEach(ghost => ghost.update(gameMap));
-    ghosts.forEach(ghost => ghost.draw(ctx));
-    drawScore();
+    if (currentState === 'START') {
+        drawMap(); 
+        drawStartScreen();
+    } else {
+        // Game Logic
+        pacman.update(gameMap);
+        collectDot();
+        checkGhostCollision();
+        checkVictory();
+        drawMap();
+        pacman.draw(ctx);
+        ghosts.forEach(ghost => ghost.update(gameMap));
+        ghosts.forEach(ghost => ghost.draw(ctx));
+        drawScore();
+    }
     requestAnimationFrame(gameLoop);
 }
 

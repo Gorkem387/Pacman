@@ -97,8 +97,8 @@ function checkVictory() {
 function drawScore() {
     ctx.fillStyle = '#FFFFFF';
     ctx.font = '20px Arial';
-    ctx.fillText('Score: ' + score, 10, 20);
-    ctx.fillText('Lives: ' + lives, 120, 20);
+    ctx.fillText('Score: ' + score, 50, 20);
+    ctx.fillText('Lives: ' + lives, 140, 20);
 }
 
 function drawStartScreen() {

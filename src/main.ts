@@ -9,7 +9,7 @@ const ctx = canvas.getContext('2d')!;
 const gameMap = MAP.map(row => [...row]);
 let score = 0;
 
-let lives = 1;
+let lives = 3;
 
 let countdown = 0;
 let canRestart = false;
@@ -115,22 +115,6 @@ function drawScore() {
     ctx.font = '20px Arial';
     ctx.fillText('Score: ' + score, 50, 20);
     ctx.fillText('Lives: ' + lives, 140, 20);
-}
-
-function drawStartScreen() {
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.85)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // Title
-    ctx.fillStyle = '#FFFF00';
-    ctx.font = 'bold 40px Arial';
-    ctx.textAlign = 'center';
-    ctx.fillText('PAC-MAN', canvas.width / 2, canvas.height / 2 - 40);
-
-    // Instruction
-    ctx.fillStyle = '#FFFFFF';
-    ctx.font = '20px Arial';
-    ctx.fillText('Press any key to start', canvas.width / 2, canvas.height / 2 + 20);
 }
 
 function drawOverlay(title: string, subtitle: string, color: string) {

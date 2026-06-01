@@ -34,18 +34,20 @@ export function isVictory(map: number[][]): boolean {
 }
 
 /**
- * Version 2.0: Checks 1 and 2 tiles away from the ghost.
- * Returns the immediate direction ('UP', 'DOWN', etc.) to reach the target.
- * 
- * @param start
- * @param target - The current target (Pac-Man).
- * @param map - The current game map.
+ * BFS algorithm to find the next direction towards a target tile.
+ * Explores the map dynamically layer by layer (Breadth-First Search).
+ * * @param start - Starting tile {row, col}
+ * @param target - Target tile {row, col}
+ * @param map - The current game map matrix
  */
 export function getNextMoveBFS(
     start: { row: number; col: number },
     target: { row: number; col: number },
     map: number[][]
 ): string | null {
+    const queue: { row: number; col: number; firstMove: string | null }[] = [];
+    const visited = new Set<string>();
+
     const directions = [
         { name: 'UP', r: -1, c: 0 },
         { name: 'DOWN', r: 1, c: 0 },
@@ -53,42 +55,37 @@ export function getNextMoveBFS(
         { name: 'RIGHT', r: 0, c: 1 }
     ];
 
-    // Check immediate neighbors (1 tile away)
-    for (const dir1 of directions) {
-        const r1 = start.row + dir1.r;
-        const c1 = start.col + dir1.c;
+    // Initialize: Push all immediate valid neighbors into the queue
+    for (const dir of directions) {
+        const nr = start.row + dir.r;
+        const nc = start.col + dir.c;
+        if (map[nr] && map[nr][nc] !== 1) {
+            queue.push({ row: nr, col: nc, firstMove: dir.name });
+            visited.add(`${nr},${nc}`);
+        }
+    }
 
-        // Verify the tile exists and is not a wall
-        if (map[r1] && map[r1][c1] !== 1) {
-            // If Pac-Man is right here, return this direction immediately
-            if (r1 === target.row && c1 === target.col) {
-                return dir1.name;
+    // Main exploration loop
+    while (queue.length > 0) {
+        const { row, col, firstMove } = queue.shift()!;
+
+        // If target reached, return the direction we took at the very start
+        if (row === target.row && col === target.col) {
+            return firstMove;
+        }
+
+        // Check neighbors of the currently popped tile
+        for (const dir of directions) {
+            const nr = row + dir.r;
+            const nc = col + dir.c;
+            const key = `${nr},${nc}`;
+
+            if (map[nr] && map[nr][nc] !== 1 && !visited.has(key)) {
+                visited.add(key);
+                queue.push({ row: nr, col: nc, firstMove });
             }
         }
     }
 
-    // Check neighbors of neighbors (2 tiles away)
-    for (const dir1 of directions) {
-        const r1 = start.row + dir1.r;
-        const c1 = start.col + dir1.c;
-
-        // Only search deeper if the first step is valid (not a wall)
-        if (map[r1] && map[r1][c1] !== 1) {
-            
-            // From this neighbor, check its own 4 directions
-            for (const dir2 of directions) {
-                const r2 = r1 + dir2.r;
-                const c2 = c1 + dir2.c;
-
-                if (map[r2] && map[r2][c2] !== 1) {
-                    if (r2 === target.row && c2 === target.col) {
-                        // Target found 2 tiles away
-                        // Return dir1.name because that's the FIRST step to get there
-                        return dir1.name; 
-                    }
-                }
-            }
-        }
-    }
-    return null; // Pac-Man is still too far away
+    return null; // No path found
 }

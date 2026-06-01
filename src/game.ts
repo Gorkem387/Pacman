@@ -35,9 +35,9 @@ export class Game {
 
         this.pacman = new Pacman(0, 0, 10, PACMAN_SPEED);
         this.ghosts = [
-            new Ghost(1 * TILE_SIZE + TILE_SIZE / 2,  1 * TILE_SIZE  + TILE_SIZE / 2, 10, 2, '#FF0000'),
-            new Ghost(29 * TILE_SIZE + TILE_SIZE / 2, 1 * TILE_SIZE  + TILE_SIZE / 2, 10, 2, '#FFB8FF'),
-            new Ghost(1 * TILE_SIZE + TILE_SIZE / 2,  15 * TILE_SIZE + TILE_SIZE / 2, 10, 2, '#FFB852'),
+            new Ghost(1 * TILE_SIZE + TILE_SIZE / 2,  1 * TILE_SIZE  + TILE_SIZE / 2, 10, 2, '#FF0000', 'BLINKY'),
+            new Ghost(29 * TILE_SIZE + TILE_SIZE / 2, 1 * TILE_SIZE  + TILE_SIZE / 2, 10, 2, '#FFB8FF', 'PINKY'),
+            new Ghost(1 * TILE_SIZE + TILE_SIZE / 2,  15 * TILE_SIZE + TILE_SIZE / 2, 10, 2, '#FFB852', 'CLYDE'),
         ];
     }
 
@@ -172,7 +172,7 @@ export class Game {
                 this.handleVictory();
                 drawMap(ctx, this.gameMap);
                 this.pacman.draw(ctx);
-                this.ghosts.forEach(g => { g.update(this.gameMap); g.draw(ctx); });
+                this.ghosts.forEach(g => { g.update(this.gameMap, this.pacman); g.draw(ctx); });
                 drawHUD(ctx, this.score, this.lives);
                 break;
 

@@ -32,3 +32,36 @@ export function checkCollision(a: Circle, b: Circle): boolean {
 export function isVictory(map: number[][]): boolean {
     return map.flat().every(cell => cell !== 0);
 }
+
+/**
+ * Version 1.0: Only checks if the target is a direct neighbor.
+ * 
+ * @param start
+ * @param target - The current target (Pac-Man).
+ * @param map - The current game map.
+ */
+export function getNextMoveBFS(
+    start: { row: number; col: number },
+    target: { row: number; col: number },
+    map: number[][]
+): string | null {
+    const directions = [
+        { name: 'UP', r: -1, c: 0 },
+        { name: 'DOWN', r: 1, c: 0 },
+        { name: 'LEFT', r: 0, c: -1 },
+        { name: 'RIGHT', r: 0, c: 1 }
+    ];
+
+    // Check all 4 directions around the ghost
+    for (const dir of directions) {
+        const nr = start.row + dir.r;
+        const nc = start.col + dir.c;
+        
+        // If the neighboring tile is exactly the target (Pac-Man)
+        if (nr === target.row && nc === target.col) {
+            return dir.name; // Target found, return the direction
+        }
+    }
+
+    return null; // Pac-Man is not nearby, fallback required
+}

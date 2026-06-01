@@ -21,6 +21,12 @@ export function drawMap(ctx: CanvasRenderingContext2D, map: number[][]): void {
                 ctx.beginPath();
                 ctx.arc(x + TILE_SIZE / 2, y + TILE_SIZE / 2, 2, 0, Math.PI * 2);
                 ctx.fill();
+            } else if (map[row][col] === 2) {
+                // Draw a much larger circle for the Super Pellet
+                ctx.fillStyle = COLORS.DOT;
+                ctx.beginPath();
+                ctx.arc(x + TILE_SIZE / 2, y + TILE_SIZE / 2, 6, 0, Math.PI * 2); // Radius 7 instead of 2!
+                ctx.fill();
             }
         }
     }

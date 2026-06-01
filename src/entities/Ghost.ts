@@ -1,4 +1,7 @@
 import { TILE_SIZE } from '../constants';
+import { getNextMoveBFS } from '../logic';
+
+export type GhostPersonality = 'BLINKY' | 'PINKY' | 'CLYDE';
 
 export class Ghost {
     x: number;
@@ -7,13 +10,16 @@ export class Ghost {
     speed: number;
     direction: string;
     color: string;
+    personality: GhostPersonality;
 
-    constructor(x: number, y: number, radius: number, speed: number, color: string) {
+    constructor(x: number, y: number, radius: number, speed: number, color: string, personality: GhostPersonality) {
         this.x = x;
         this.y = y;
         this.radius = radius;
         this.speed = speed;
         this.color = color;
+        this.personality = personality;
+        
         // Random direction at start
         const directions = ['UP', 'DOWN', 'LEFT', 'RIGHT'];
         this.direction = directions[Math.floor(Math.random() * directions.length)];
@@ -60,7 +66,7 @@ export class Ghost {
         ctx.fill();
     }
 
-    update(map: number[][]) {
+    update(map: number[][], pacman: { x: number; y: number }) {
         let nextX = this.x;
         let nextY = this.y;
 
@@ -90,6 +96,38 @@ export class Ghost {
             // Hit a wall, pick a random new direction
             const directions = ['UP', 'DOWN', 'LEFT', 'RIGHT'];
             this.direction = directions[Math.floor(Math.random() * directions.length)];
+        }
+
+        // Trigger direction logic only when the ghost is perfectly centered on a tile
+        if (this.x % TILE_SIZE === TILE_SIZE / 2 && this.y % TILE_SIZE === TILE_SIZE / 2) {
+            
+            let nextMove: string | null = null;
+
+            if (this.personality === 'BLINKY') {
+                // Calculate the ghost's current grid tile position
+                const ghostTile = {
+                    row: Math.floor(this.y / TILE_SIZE),
+                    col: Math.floor(this.x / TILE_SIZE)
+                };
+
+                const pacmanTile = {
+                    row: Math.floor(pacman.y / TILE_SIZE),
+                    col: Math.floor(pacman.x / TILE_SIZE)
+                };
+                
+                // Run our mini-BFS check
+                nextMove = getNextMoveBFS(ghostTile, pacmanTile, map);
+            }
+
+            if (nextMove) {
+                this.direction = nextMove; // Blinky locks onto Pac-Man!
+            } else {
+                // Default random behavior fallback
+                const directions = ['UP', 'DOWN', 'LEFT', 'RIGHT'];
+                if (Math.random() < 0.2) { 
+                    this.direction = directions[Math.floor(Math.random() * directions.length)];
+                }
+            }
         }
     }
 }

@@ -34,7 +34,8 @@ export function isVictory(map: number[][]): boolean {
 }
 
 /**
- * Version 1.0: Only checks if the target is a direct neighbor.
+ * Version 2.0: Checks 1 and 2 tiles away from the ghost.
+ * Returns the immediate direction ('UP', 'DOWN', etc.) to reach the target.
  * 
  * @param start
  * @param target - The current target (Pac-Man).
@@ -52,16 +53,42 @@ export function getNextMoveBFS(
         { name: 'RIGHT', r: 0, c: 1 }
     ];
 
-    // Check all 4 directions around the ghost
-    for (const dir of directions) {
-        const nr = start.row + dir.r;
-        const nc = start.col + dir.c;
-        
-        // If the neighboring tile is exactly the target (Pac-Man)
-        if (nr === target.row && nc === target.col) {
-            return dir.name; // Target found, return the direction
+    // Check immediate neighbors (1 tile away)
+    for (const dir1 of directions) {
+        const r1 = start.row + dir1.r;
+        const c1 = start.col + dir1.c;
+
+        // Verify the tile exists and is not a wall
+        if (map[r1] && map[r1][c1] !== 1) {
+            // If Pac-Man is right here, return this direction immediately
+            if (r1 === target.row && c1 === target.col) {
+                return dir1.name;
+            }
         }
     }
 
-    return null; // Pac-Man is not nearby, fallback required
+    // Check neighbors of neighbors (2 tiles away)
+    for (const dir1 of directions) {
+        const r1 = start.row + dir1.r;
+        const c1 = start.col + dir1.c;
+
+        // Only search deeper if the first step is valid (not a wall)
+        if (map[r1] && map[r1][c1] !== 1) {
+            
+            // From this neighbor, check its own 4 directions
+            for (const dir2 of directions) {
+                const r2 = r1 + dir2.r;
+                const c2 = c1 + dir2.c;
+
+                if (map[r2] && map[r2][c2] !== 1) {
+                    if (r2 === target.row && c2 === target.col) {
+                        // Target found 2 tiles away
+                        // Return dir1.name because that's the FIRST step to get there
+                        return dir1.name; 
+                    }
+                }
+            }
+        }
+    }
+    return null; // Pac-Man is still too far away
 }

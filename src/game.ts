@@ -67,6 +67,27 @@ export class Game {
             }
         }
     }
+    
+    /**
+     * Resets all ghosts to their initial starting positions and directions.
+     * Called at game startup and whenever Pac-Man loses a life.
+     */
+    private placeGhosts(): void {
+        // Blinky (Red)
+        this.ghosts[0].x = 1 * TILE_SIZE + TILE_SIZE / 2;
+        this.ghosts[0].y = 1 * TILE_SIZE + TILE_SIZE / 2;
+        this.ghosts[0].direction = 'LEFT';
+
+        // Pinky (Pink)
+        this.ghosts[1].x = 29 * TILE_SIZE + TILE_SIZE / 2;
+        this.ghosts[1].y = 1 * TILE_SIZE + TILE_SIZE / 2;
+        this.ghosts[1].direction = 'LEFT';
+
+        // Clyde (Orange)
+        this.ghosts[2].x = 1 * TILE_SIZE + TILE_SIZE / 2;
+        this.ghosts[2].y = 15 * TILE_SIZE + TILE_SIZE / 2;
+        this.ghosts[2].direction = 'LEFT';
+    }
 
     /**
      * Checks whether Pac-Man is standing on a dot and, if so,
@@ -96,6 +117,7 @@ export class Game {
                     this.startRestartCountdown();
                 } else {
                     this.placePacman();
+                    this.placeGhosts();
                 }
             }
         });

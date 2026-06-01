@@ -97,8 +97,20 @@ export class Ghost {
                 if (pacman.direction === 'RIGHT') targetCol += 4;
 
                 const targetTile = { row: targetRow, col: targetCol };
-                
-                // Pass the ambushing tile to the exact same BFS algorithm
+                nextMove = getNextMoveBFS(ghostTile, targetTile, map);
+
+            } else if (this.personality === 'CLYDE') {
+                // Clyde targets Pac-Man if far away, but flees to top-left corner if too close
+                const distance = Math.hypot(
+                    ghostTile.col - pacmanTile.col,
+                    ghostTile.row - pacmanTile.row
+                );
+
+                // If further than 8 tiles, chase Pac-Man. Otherwise, head to tile (1, 1)
+                const targetTile = distance > 8 
+                    ? pacmanTile 
+                    : { row: 1, col: 1 };
+
                 nextMove = getNextMoveBFS(ghostTile, targetTile, map);
             }
 

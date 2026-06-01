@@ -66,31 +66,58 @@ export class Ghost {
         ctx.fill();
     }
 
-    update(map: number[][], pacman: { x: number; y: number }) {
-        // Only recalculate when the ghost is perfectly centered on a tile
+    update(map: number[][], pacman: { x: number; y: number; direction: string }) {
+        // Trigger direction logic only when the ghost is perfectly centered on a tile
         if (this.x % TILE_SIZE === TILE_SIZE / 2 && this.y % TILE_SIZE === TILE_SIZE / 2) {
             
             let nextMove: string | null = null;
 
-            if (this.personality === 'BLINKY') {
-                const ghostTile = {
-                    row: Math.floor(this.y / TILE_SIZE),
-                    col: Math.floor(this.x / TILE_SIZE)
-                };
+            const ghostTile = {
+                row: Math.floor(this.y / TILE_SIZE),
+                col: Math.floor(this.x / TILE_SIZE)
+            };
 
-                const pacmanTile = {
-                    row: Math.floor(pacman.y / TILE_SIZE),
-                    col: Math.floor(pacman.x / TILE_SIZE)
-                };
-                
-                // Run the complete V3 BFS pathfinding
+            const pacmanTile = {
+                row: Math.floor(pacman.y / TILE_SIZE),
+                col: Math.floor(pacman.x / TILE_SIZE)
+            };
+
+            if (this.personality === 'BLINKY') {
+                // Blinky targets Pac-Man directly
                 nextMove = getNextMoveBFS(ghostTile, pacmanTile, map);
+                
+            } else if (this.personality === 'PINKY') {
+                // Pinky targets 4 tiles ahead of Pac-Man
+                let targetRow = pacmanTile.row;
+                let targetCol = pacmanTile.col;
+
+                if (pacman.direction === 'UP') targetRow -= 4;
+                if (pacman.direction === 'DOWN') targetRow += 4;
+                if (pacman.direction === 'LEFT') targetCol -= 4;
+                if (pacman.direction === 'RIGHT') targetCol += 4;
+
+                const targetTile = { row: targetRow, col: targetCol };
+                nextMove = getNextMoveBFS(ghostTile, targetTile, map);
+
+            } else if (this.personality === 'CLYDE') {
+                // Clyde targets Pac-Man if far away, but flees to top-left corner if too close
+                const distance = Math.hypot(
+                    ghostTile.col - pacmanTile.col,
+                    ghostTile.row - pacmanTile.row
+                );
+
+                // If further than 8 tiles, chase Pac-Man. Otherwise, head to tile (1, 1)
+                const targetTile = distance > 8 
+                    ? pacmanTile 
+                    : { row: 1, col: 1 };
+
+                nextMove = getNextMoveBFS(ghostTile, targetTile, map);
             }
 
             if (nextMove) {
-                this.direction = nextMove; // Blinky locks onto Pac-Man
+                this.direction = nextMove;
             } else {
-                // Default random behavior fallback (for Pinky, Clyde, or if trapped)
+                // Default random behavior fallback
                 const directions = ['UP', 'DOWN', 'LEFT', 'RIGHT'];
                 if (Math.random() < 0.2) { 
                     this.direction = directions[Math.floor(Math.random() * directions.length)];

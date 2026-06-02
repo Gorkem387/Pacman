@@ -26,6 +26,8 @@ export class Game {
     private countdown: number = 0;
     private canRestart: boolean = false;
 
+    private frightenedTimeout: any = null;
+
     constructor(canvas: HTMLCanvasElement) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d')!;
@@ -100,7 +102,36 @@ export class Game {
         if (this.gameMap[row][col] === 0) {
             this.gameMap[row][col] = 7; // 7 = collected dot (empty cell)
             this.score++;
+        } else if (this.gameMap[row][col] === 2) {
+            this.gameMap[row][col] = 7; // 7 = collected dot (empty cell)
+            this.score += 50; // Super pellets give 50 points
+            this.triggerFrightenedMode(); // Trigger the global panic state
         }
+    }
+
+    /**
+     * Activates Frightened Mode for 7 seconds.
+     * Resets the duration if another Super Pellet is eaten before expiration.
+     */
+    private triggerFrightenedMode(): void {
+        // If a timer is already running, clear it to refresh the 7 seconds
+        if (this.frightenedTimeout) {
+            clearTimeout(this.frightenedTimeout);
+        }
+
+        // Tell all ghosts to enter frightened state
+        this.ghosts.forEach(ghost => {
+            ghost.isFrightened = true;
+        });
+
+        // Start a 7-second countdown (7000ms) to turn ghosts back to normal
+        this.frightenedTimeout = setTimeout(() => {
+            this.ghosts.forEach(ghost => {
+                ghost.isFrightened = false;
+            });
+            this.frightenedTimeout = null;
+            console.log("Frightened mode expired!");
+        }, 7000);
     }
 
     /**
@@ -116,6 +147,13 @@ export class Game {
                     this.state = 'GAME_OVER';
                     this.startRestartCountdown();
                 } else {
+                    // Clear frightened timer if Pac-Man dies during the power-up
+                    if (this.frightenedTimeout) {
+                        clearTimeout(this.frightenedTimeout);
+                        this.frightenedTimeout = null;
+                    }
+                    this.ghosts.forEach(ghost => ghost.isFrightened = false);
+
                     this.placePacman();
                     this.placeGhosts();
                 }
